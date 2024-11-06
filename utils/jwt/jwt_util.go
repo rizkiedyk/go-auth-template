@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"go-auth/domain/model"
 	"go-auth/utils/helper"
 
@@ -25,14 +26,17 @@ func ParseToken(tokenStr string) (model.User, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
+	fmt.Println(token)
 	if err != nil || !token.Valid {
 		return model.User{}, err
 	}
 
-	claims := token.Claims.(jwt.MapClaims)
+	claims := token.Claims.(*jwt.MapClaims)
+
+	fmt.Println(claims)
 
 	return model.User{
-		Username: claims["username"].(string),
-		Role:     claims["role"].(string),
+		Username: (*claims)["username"].(string),
+		Role:     (*claims)["role"].(string),
 	}, nil
 }

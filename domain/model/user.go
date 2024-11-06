@@ -6,6 +6,8 @@ type User struct {
 	Password string `json:"password" bson:"password"`
 	Role string `json:"role" bson:"role"`
 	Email string `json:"email" bson:"email"`
+	CreatedAt int `json:"created_at" bson:"created_at"`
+	UpdatedAt int `json:"updated_at" bson:"updated_at"`
 }
 
 const (

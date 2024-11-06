@@ -29,7 +29,6 @@ func NewAuthService(repo repository.IAuthRepo) *authService {
 }
 
 func (s *authService) Register(user model.User) error {
-	fmt.Printf("registering user: %v\n", user)
 	exist, err := s.repo.GetUserExisting(user.Username)
 	if err != nil {
 		fmt.Println("testing")

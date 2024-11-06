@@ -26,7 +26,15 @@ func SetupRouter() *gin.Engine {
 	authRepo := repository.NewAuthRepository(db, indexRepo)
 	authService := service.NewAuthService(authRepo)
 	authHandler := handler.NewAuthHandler(authService)
+
+	// user route
+	userRepo := repository.NewUserRepo(db, indexRepo)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+
+
 	AuthRoute(apiV1, authHandler)
+	UserRoute(apiV1, userHandler)
 
 	return route
 }

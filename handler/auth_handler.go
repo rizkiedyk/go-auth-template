@@ -5,6 +5,7 @@ import (
 	"go-auth/domain/model"
 	"go-auth/service"
 	"go-auth/utils/validator"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -47,6 +48,8 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Username: reqUser.Username,
 		Password: reqUser.Password,
 		Email:    reqUser.Email,
+		CreatedAt: int(time.Now().Unix()),
+		UpdatedAt: int(time.Now().Unix()),
 	}
 
 	if err := h.authService.Register(user); err != nil {
