@@ -39,6 +39,21 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 	})
 }
 
+func (h *UserHandler) GetUserByID(c *gin.Context) {
+    userID := c.Query("id")
+
+    // Get role from context
+    role := c.MustGet("role").(string)
+
+    user, err := h.userService.GetUserByID(userID, role)
+    if err != nil {
+        c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
 func (u *UserHandler) SetRole(c *gin.Context) {
 	var req dto.SetRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

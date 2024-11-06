@@ -10,6 +10,7 @@ import (
 
 type IUserService interface {
 	GetAllUsers(role string) ([]model.User, error)
+	GetUserByID(userID string, role string) (model.User, error)
 	SetRole(req dto.SetRoleRequest) (model.User, error)
 }
 
@@ -33,6 +34,20 @@ func (s *userService) GetAllUsers(role string) ([]model.User, error) {
 	}
 
 	return nil, errors.New("unauthorized to view users")
+}
+
+func (s *userService) GetUserByID(userID string, role string) (model.User, error) {
+    user, err := s.repo.GetUserByID(userID)
+    if err != nil {
+        return model.User{}, err
+    }
+
+    // Superadmin can access all users, admins can access only admins and users
+    if role != "superadmin" && !(role == "admin" && (user.Role == "admin" || user.Role == "user")) {
+        return model.User{}, errors.New("unauthorized to view this user")
+    }
+
+    return user, nil
 }
 
 func (s *userService) SetRole(req dto.SetRoleRequest) (model.User, error) {
