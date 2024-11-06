@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"go-auth/domain/model"
 	"go-auth/repository"
 	"go-auth/utils/jwt"
@@ -31,7 +30,6 @@ func NewAuthService(repo repository.IAuthRepo) *authService {
 func (s *authService) Register(user model.User) error {
 	exist, err := s.repo.GetUserExisting(user.Username)
 	if err != nil {
-		fmt.Println("testing")
 		return err
 	}
 

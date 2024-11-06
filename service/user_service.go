@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"go-auth/domain/dto"
 	"go-auth/domain/model"
 	"go-auth/repository"
@@ -8,6 +9,7 @@ import (
 )
 
 type IUserService interface {
+	GetAllUsers(role string) ([]model.User, error)
 	SetRole(req dto.SetRoleRequest) (model.User, error)
 }
 
@@ -19,6 +21,18 @@ func NewUserService(repo repository.IUserRepo) *userService {
 	return &userService{
 		repo: repo,
 	}
+}
+
+func (s *userService) GetAllUsers(role string) ([]model.User, error) {
+	if role == "super_admin" {
+		return s.repo.GetAllUsers()
+	}
+
+	if role == "admin" {
+		return s.repo.GetAllUsersByRole([]string{"admin", "user"})
+	}
+
+	return nil, errors.New("unauthorized to view users")
 }
 
 func (s *userService) SetRole(req dto.SetRoleRequest) (model.User, error) {

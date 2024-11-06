@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"go-auth/domain/dto"
 	"go-auth/domain/model"
 	"go-auth/utils/jwt"
@@ -25,10 +24,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		token = strings.TrimPrefix(token, "Bearer ")
-		fmt.Println("Token without Bearer:", token)
 
 		user, err := jwt.ParseToken(token)
-		fmt.Println("jsnja :", user)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.Resp{
 				Code:    http.StatusUnauthorized,
@@ -73,15 +70,34 @@ func AdminOnlyMiddleware() gin.HandlerFunc {
             return
         }
 
-        if u.Role != "admin" {
+        if u.Role != "super_admin" {
 			c.JSON(http.StatusForbidden, dto.Resp{
 				Code:    http.StatusForbidden,
-				Message: "Admin only",
+				Message: "Super Admin only",
 				Data:    nil,
 			})
             c.Abort()
             return
         }
+
+        c.Set("role", u.Role)
+
+        c.Next()
+    }
+}
+
+func AccessControlMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        user, exists := c.Get("user")
+        if !exists {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+            c.Abort()
+            return
+        }
+
+        currentUser := user.(model.User)
+
+        c.Set("role", currentUser.Role)
 
         c.Next()
     }

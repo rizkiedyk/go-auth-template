@@ -47,6 +47,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Id: uuid.New().String(),
 		Username: reqUser.Username,
 		Password: reqUser.Password,
+		Role: "user",
 		Email:    reqUser.Email,
 		CreatedAt: int(time.Now().Unix()),
 		UpdatedAt: int(time.Now().Unix()),

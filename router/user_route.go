@@ -10,6 +10,7 @@ import (
 func UserRoute(r *gin.RouterGroup, userHandler *handler.UserHandler) {
 	userRoutes := r.Group("/user", middleware.AuthMiddleware())
 	{
-		userRoutes.POST("/set-role", middleware.AdminOnlyMiddleware(), userHandler.SetRole)
+		userRoutes.GET("/", middleware.AccessControlMiddleware(), userHandler.GetUsers)
+		userRoutes.POST("/set-role", middleware.AccessControlMiddleware(), userHandler.SetRole)
 	}
 }
