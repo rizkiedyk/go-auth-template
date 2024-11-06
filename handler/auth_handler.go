@@ -4,6 +4,7 @@ import (
 	"go-auth/domain/dto"
 	"go-auth/domain/model"
 	"go-auth/service"
+	"go-auth/utils/validator"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -30,6 +31,16 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		})
 		return
 	}
+
+	validationErrors := validator.ValidateStruct(reqUser)
+    if validationErrors != nil {
+		c.JSON(400, dto.Resp{
+			Code:    400,
+			Message: "invalid request body",
+			Data:    validationErrors,
+		})
+        return
+    }
 
 	user := model.User{
 		Id: uuid.New().String(),
@@ -64,6 +75,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		})
 		return
 	}
+
+	validationErrors := validator.ValidateStruct(req)
+    if validationErrors != nil {
+		c.JSON(400, dto.Resp{
+			Code:    400,
+			Message: "invalid request body",
+			Data:    validationErrors,
+		})
+        return
+    }
 
 	token, err := h.authService.Login(req.Username, req.Password)
 	if err != nil {

@@ -8,7 +8,6 @@ import (
 	"go-auth/utils/jwt"
 	"go-auth/utils/security"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/op/go-logging"
 )
 
@@ -41,18 +40,11 @@ func (s *authService) Register(user model.User) error {
 		return errors.New("user already exist")
 	}
 
-	validation := validator.New()
-	err = validation.Struct(user)
-	if err != nil {
-		return err
-	}
-
 	hashedPassword, err := security.HashPassword(user.Password)
 	if err != nil {
 		return err
 	}
 	user.Password = hashedPassword
-	// logging.INFO("registering user service: %v\n", user)
 	err = s.repo.RegisterRepo(user)
 	if err != nil {
 		return err
